@@ -1,0 +1,36 @@
+# Giverny — an Omarchy theme after Claude Monet's paintings.
+# Twilight pond base (Water Lilies, Parliament at Sunset), canvas-cream text,
+# wisteria lavender accent, poppy red, Impression-Sunrise orange, lily-pad sage.
+mode = "dark"
+
+accent = "#a9a3e0"
+selection = "#3a4058"
+muted = "#636a85"
+
+background = "#1e2230"
+dark_background = "#181b27"
+darker_background = "#12141d"
+lighter_background = "#2a2f42"
+
+foreground = "#e4dfd0"
+dark_foreground = "#8d93a8"
+light_foreground = "#d6d1c2"
+bright_foreground = "#f4f0e4"
+
+red = "#e07a6f"
+yellow = "#e9cf86"
+orange = "#ec8f54"
+green = "#9fc28e"
+cyan = "#84c1bb"
+blue = "#86a6d9"
+magenta = "#d39ac7"
+brown = "#9a7a5c"
+
+bright_red = "#f0998f"
+bright_yellow = "#f5e0a6"
+bright_orange = "#f5ac7c"
+bright_green = "#bad8aa"
+bright_cyan = "#a6d8d2"
+bright_blue = "#a7c0e8"
+bright_magenta = "#e6b7dc"
+bright_brown = "#bc9b7c"

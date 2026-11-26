@@ -1,0 +1,36 @@
+# Giverny Light — daylight companion to Giverny, after Claude Monet.
+# Warm parchment-cream ground (not white), deep indigo ink, wisteria accent;
+# colours deepened so they keep ~4:1 contrast on the cream.
+mode = "light"
+
+accent = "#5a4fa3"
+selection = "#cbc0d6"
+muted = "#7d7768"
+
+background = "#e4d9c3"
+dark_background = "#d9cdb4"
+darker_background = "#cdc0a5"
+lighter_background = "#ece3d0"
+
+foreground = "#2b2d3d"
+dark_foreground = "#5e6075"
+light_foreground = "#3a3c4f"
+bright_foreground = "#1b1d2a"
+
+red = "#a63e36"
+yellow = "#785a0a"
+orange = "#9e4c1c"
+green = "#426a37"
+cyan = "#256a65"
+blue = "#3a5a9a"
+magenta = "#8a4380"
+brown = "#6e5034"
+
+bright_red = "#b84a40"
+bright_yellow = "#94700f"
+bright_orange = "#bb5f28"
+bright_green = "#538446"
+bright_cyan = "#30837d"
+bright_blue = "#4769ad"
+bright_magenta = "#9d5193"
+bright_brown = "#80603f"

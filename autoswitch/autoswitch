@@ -1,0 +1,63 @@
+#!/bin/bash
+# Giverny auto light/dark.
+#
+# Watches Omarchy's current-background symlink. While the theme is Giverny or
+# Giverny Light, switches to whichever variant suits the chosen painting
+# (see paintings.conf), carrying the painting across the switch.
+
+set -u
+
+THEME_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)"
+MAP="$THEME_DIR/paintings.conf"
+STATE="$HOME/.local/state/omarchy"
+CUR="$STATE/current"
+LINK="$CUR/background"
+THEME_LOCK="${XDG_RUNTIME_DIR:-/tmp}/omarchy-theme-set.lock"
+SELF_LOCK="${XDG_RUNTIME_DIR:-/tmp}/giverny-autoswitch.lock"
+
+exec 7>"$SELF_LOCK"
+flock -n 7 || { echo "giverny-autoswitch already running"; exit 0; }
+
+# dark|light for a painting: paintings.conf first, else average brightness.
+mode_for() {
+  local name="$1" file="$2" mode luma
+  mode=$(awk -v n="$name" '!/^#/ && $1 == n { print $2; exit }' "$MAP" 2>/dev/null)
+  if [[ $mode != dark && $mode != light ]]; then
+    luma=$(magick "$file[0]" -resize 64x64! -colorspace Gray -format '%[fx:mean]' info: 2>/dev/null)
+    awk -v l="${luma:-0}" 'BEGIN { exit !(l > 0.55) }' && mode=light || mode=dark
+  fi
+  echo "$mode"
+}
+
+check() {
+  flock "$THEME_LOCK" true 2>/dev/null   # let an in-progress theme switch finish first
+
+  local theme file base want remembered
+  theme=$(cat "$CUR/theme.name" 2>/dev/null)
+  [[ $theme == giverny || $theme == giverny-light ]] || return 0
+
+  file=$(readlink -f "$LINK" 2>/dev/null)
+  [[ -f $file ]] || return 0
+  base=${file##*/}
+
+  want=giverny
+  [[ $(mode_for "${base%.*}" "$file") == light ]] && want=giverny-light
+  [[ $want == "$theme" ]] && return 0
+
+  # omarchy-theme-set picks the background remembered for the target theme;
+  # point that at the painting just chosen so it stays on screen.
+  remembered="$CUR/theme/backgrounds/$base"
+  [[ -f $remembered ]] || remembered="$file"
+  mkdir -p "$STATE/theme-backgrounds"
+  printf '%s\n' "$remembered" >"$STATE/theme-backgrounds/$want"
+
+  echo "$(date '+%F %T') ${base%.*} -> $want"
+  omarchy-theme-set "$want" </dev/null >/dev/null 2>&1
+}
+
+check
+inotifywait -m -q -e create,moved_to --format '%f' "$CUR" | while read -r name; do
+  [[ $name == background ]] || continue
+  sleep 0.3
+  check
+done
