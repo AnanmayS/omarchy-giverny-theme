@@ -48,7 +48,9 @@ rm -rf "${hook%/*}"
 
 chmod +x "$DAEMON"
 mkdir -p "${LOG%/*}"
-pgrep -f "$DAEMON" >/dev/null || setsid -f "$DAEMON" </dev/null >>"$LOG" 2>&1
+# (Re)start so an updated switcher takes effect.
+pkill -f "^/bin/bash $DAEMON\$" 2>/dev/null && sleep 0.5
+setsid -f "$DAEMON" </dev/null >>"$LOG" 2>&1
 
 echo "Giverny Light installed and the light/dark switcher is running."
 echo "Pick any painting (Super+Ctrl+Space or 'omarchy theme bg next') and the theme follows it."

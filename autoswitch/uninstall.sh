@@ -5,7 +5,7 @@
 THEME_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 rm -f "$HOME/.config/omarchy/hooks/post-boot.d/giverny-autoswitch"
-pkill -f "$THEME_DIR/autoswitch/autoswitch" 2>/dev/null
+pkill -f "^/bin/bash $THEME_DIR/autoswitch/autoswitch\$" 2>/dev/null
 
 if [[ $(cat "$HOME/.local/state/omarchy/current/theme.name" 2>/dev/null) == giverny-light ]]; then
   omarchy theme set giverny

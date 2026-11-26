@@ -56,7 +56,15 @@ check() {
 }
 
 check
-inotifywait -m -q -e create,moved_to --format '%f' "$CUR" | while read -r name; do
+
+# The watcher must not inherit the lock (fd 7), and must die with this script,
+# or a restarted switcher would find the lock still held.
+exec 8< <(exec inotifywait -m -q -e create,moved_to --format '%f' "$CUR" 7>&-)
+WATCHER=$!
+trap 'kill "$WATCHER" 2>/dev/null' EXIT
+trap 'exit 0' TERM INT HUP
+
+while read -r name <&8; do
   [[ $name == background ]] || continue
   sleep 0.3
   check
